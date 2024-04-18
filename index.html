@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Création d'équipes</h1>
+    <input id="teamName" type="text" placeholder="Nom de l'équipe" onkeydown="handleKeyPress(event)">
+    <select id="poolSelection">
+        <option value="A">Poule A</option>
+        <option value="B">Poule B</option>
+    </select>
+    <button onclick="addTeam()">Ajouter une équipe</button>
+    <br>
+    <div class="poule">
+        <div class="pool-container">
+            <h2 class="pool-header">Poule A</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classement</th>
+                        <th>Équipe</th>
+                        <th contenteditable="true">Matchs Joués</th>
+                        <th contenteditable="true">Victoires</th>
+                        <th contenteditable="true">Matchs Nuls</th>
+                        <th contenteditable="true">Défaites</th>
+                        <th>Points</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="poolA" onclick="selectTeam(event, 'A')">
+                </tbody>
+            </table>
+        </div>
+        <div class="pool-container">
+            <h2 class="pool-header">Poule B</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classement</th>
+                        <th>Équipe</th>
+                        <th contenteditable="true">Matchs Joués</th>
+                        <th contenteditable="true">Victoires</th>
+                        <th contenteditable="true">Matchs Nuls</th>
+                        <th contenteditable="true">Défaites</th>
+                        <th>Points</th>
+                        <th>Actions</th>
+                    </tr>   
+                </thead>
+                <tbody id="poolB" onclick="selectTeam(event, 'B')">
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button id="startButton" onclick="startTournament()">Démarrer le tournoi</button>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+
+    <!-- <script>
+        // Créer des équipes
+        var teams = [];
+        var poolCounts = { A: 0, B: 0 };
+
+        // Gestionnaire d'événements pour la frappe de touche
+        function handleKeyPress(event) {
+            if (event.keyCode === 13) {
+                addTeam();
+            }
+        }
+
+        // Ajouter une équipe
+        function addTeam() {
+            var teamName = document.getElementById('teamName').value;
+            var poolSelection = document.getElementById('poolSelection').value;
+            if (teamName) {
+                teams.push({ name: teamName, pool: poolSelection, stats: { played: 0, wins: 0, draws: 0, losses: 0, points: 0 } });
+                poolCounts[poolSelection]++;
+                displayTeams();
+                document.getElementById('teamName').value = '';
+            }
+            checkStartButton();
+        }
+
+        // Afficher les équipes
+        function displayTeams() {
+            var poolA = document.getElementById('poolA');
+            var poolB = document.getElementById('poolB');
+            poolA.innerHTML = '';
+            poolB.innerHTML = '';
+            teams.forEach(team => {
+                var teamDiv = document.createElement('tr');
+                teamDiv.className = 'team';
+                teamDiv.innerHTML = `<td>${team.name}</td>
+                                     <td contenteditable="true">${team.stats.played}</td>
+                                     <td contenteditable="true">${team.stats.wins}</td>
+                                     <td contenteditable="true">${team.stats.draws}</td>
+                                     <td contenteditable="true">${team.stats.losses}</td>
+                                     <td>${team.stats.points}</td>
+                                     <td><button onclick="deleteTeam('${team.name}')">Supprimer</button></td>`;
+                if (team.pool === 'A') {
+                    poolA.appendChild(teamDiv);
+                } else {
+                    poolB.appendChild(teamDiv);
+                }
+            });
+        }
+
+        // Supprimer une équipe
+        function deleteTeam(teamName) {
+            var index = teams.findIndex(team => team.name === teamName);
+            if (index !== -1) {
+                var teamToDelete = teams[index];
+                poolCounts[teamToDelete.pool]--;
+                teams.splice(index, 1);
+                displayTeams();
+                checkStartButton();
+            }
+        }
+
+        // Vérifier si le bouton de démarrage doit être affiché
+        function checkStartButton() {
+            if (poolCounts['A'] >= 4 && poolCounts['B'] >= 4) {
+                document.getElementById('startButton').style.display = 'block';
+            } else {
+                document.getElementById('startButton').style.display = 'none';
+            }
+        }
+
+        // Démarrer le tournoi
+        function startTournament() {
+            var poolA = teams.filter(team => team.pool === 'A');
+            var poolB = teams.filter(team => team.pool === 'B');
+            poolA.sort((a, b) => (a.name > b.name) ? 1 : -1);
+            poolB.sort((a, b) => (a.name > b.name) ? 1 : -1);
+            displayRankings(poolA, 'A');
+            displayRankings(poolB, 'B');
+        }
+
+        // Afficher les classements de chaque poule
+        function displayRankings(pool, poolName) {
+            var rankingText = `<h2>Classement de la Poule ${poolName}</h2>
+                       <table>
+                           <thead>
+                               <tr>
+                                   <th>Équipe</th>
+                                   <th>Matchs Joués</th>
+                                   <th>Victoires</th>
+                                   <th>Matchs Nuls</th>
+                                   <th>Défaites</th>
+                                   <th>Points</th>
+                               </tr>
+                           </thead>
+                           <tbody>`;
+            pool.forEach((team, index) => {
+                rankingText += `<tr>
+                            <td>${team.name}</td>
+                            <td>${team.stats.played}</td>
+                            <td>${team.stats.wins}</td>
+                            <td>${team.stats.draws}</td>
+                            <td>${team.stats.losses}</td>
+                            <td>${team.stats.points}</td>
+                        </tr>`;
+            });
+            rankingText += '</tbody></table>';
+            document.body.insertAdjacentHTML('beforeend', rankingText);
+        }
+
+    </script> -->
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.poule {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.pool-container {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.pool-container table {
+    border-collapse: collapse;
+    width: 600px;
+    /* Ajustez la largeur du tableau selon vos besoins */
+}
+
+.pool-header {
+    background-color: #f2f2f2;
+    padding: 5px;
+    border-bottom: 2px solid #ccc;
+    font-size: 1.2em;
+}
+
+.team {
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.team:hover {
+    background-color: #f0f0f0;
+}
+
+#startButton {
+    display: none;
+    margin-top: 20px;
+}
+
+td {
+    padding: 20px;
+}
+
+th,
+td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    vertical-align: middle;
+    /* Alignement vertical */
+}
