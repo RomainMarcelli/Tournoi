@@ -108,11 +108,17 @@ function displayTeams() {
     var poolB = document.getElementById('poolB');
     poolA.innerHTML = '';
     poolB.innerHTML = '';
-    
-    // Trier les équipes par ordre décroissant de points
-    teams.sort((a, b) => b.stats.points - a.stats.points);
-    
-    teams.forEach((team, index) => {
+
+    // Séparer les équipes par poule
+    var teamsA = teams.filter(team => team.pool === 'A');
+    var teamsB = teams.filter(team => team.pool === 'B');
+
+    // Trier les équipes par ordre décroissant de points pour chaque poule
+    teamsA.sort((a, b) => b.stats.points - a.stats.points);
+    teamsB.sort((a, b) => b.stats.points - a.stats.points);
+
+    // Afficher les équipes de la poule A
+    teamsA.forEach((team, index) => {
         var teamDiv = document.createElement('tr');
         teamDiv.className = 'team';
         teamDiv.innerHTML = `<td>${index + 1}</td>
@@ -123,13 +129,25 @@ function displayTeams() {
                              <td contenteditable="true" onblur="handleStatsChange(event, '${team.name}', 'losses')">${team.stats.losses}</td>
                              <td>${team.stats.points}</td>
                              <td><button onclick="deleteTeam('${team.name}')">Supprimer</button></td>`;
-        if (team.pool === 'A') {
-            poolA.appendChild(teamDiv);
-        } else {
-            poolB.appendChild(teamDiv);
-        }
+        poolA.appendChild(teamDiv);
+    });
+
+    // Afficher les équipes de la poule B
+    teamsB.forEach((team, index) => {
+        var teamDiv = document.createElement('tr');
+        teamDiv.className = 'team';
+        teamDiv.innerHTML = `<td>${index + 1}</td>
+                             <td>${team.name}</td>
+                             <td contenteditable="true" onblur="handleStatsChange(event, '${team.name}', 'played')">${team.stats.played}</td>
+                             <td contenteditable="true" onblur="handleStatsChange(event, '${team.name}', 'wins')">${team.stats.wins}</td>
+                             <td contenteditable="true" onblur="handleStatsChange(event, '${team.name}', 'draws')">${team.stats.draws}</td>
+                             <td contenteditable="true" onblur="handleStatsChange(event, '${team.name}', 'losses')">${team.stats.losses}</td>
+                             <td>${team.stats.points}</td>
+                             <td><button onclick="deleteTeam('${team.name}')">Supprimer</button></td>`;
+        poolB.appendChild(teamDiv);
     });
 }
+
 
 // Afficher les classements de chaque poule
 function displayRankings(pool, poolName) {
