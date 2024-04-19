@@ -59,25 +59,6 @@ function deleteTeam(teamName) {
     }
 }
 
-// Vérifier si le bouton de démarrage doit être affiché
-function checkStartButton() {
-    if (poolCounts['A'] >= 4 && poolCounts['B'] >= 4) {
-        document.getElementById('startButton').style.display = 'block';
-    } else {
-        document.getElementById('startButton').style.display = 'none';
-    }
-}
-
-// Démarrer le tournoi
-function startTournament() {
-    var poolA = teams.filter(team => team.pool === 'A');
-    var poolB = teams.filter(team => team.pool === 'B');
-    poolA.sort((a, b) => (a.name > b.name) ? 1 : -1);
-    poolB.sort((a, b) => (a.name > b.name) ? 1 : -1);
-    displayRankings(poolA, 'A');
-    displayRankings(poolB, 'B');
-}
-
 // Calculer les points en fonction des statistiques de l'équipe
 function calculatePoints(team) {
     team.stats.points = (team.stats.wins * 3) + team.stats.draws;
@@ -188,4 +169,59 @@ function displayRankings(pool, poolName) {
     document.body.insertAdjacentHTML('beforeend', rankingText);
 }
 
+
+// Liste des matchs générés
+var matches = [];
+
+// Gestionnaire d'événements pour le clic sur le bouton "Générer un match aléatoire"
+function generateRandomMatch() {
+    // Récupérer la valeur sélectionnée dans le sélecteur de poule
+    var selectedPool = document.getElementById('poolSelector').value;
+
+    // Filtrer les équipes en fonction de la poule sélectionnée
+    var poolTeams = teams.filter(team => team.pool === selectedPool);
+
+    // Vérifier s'il y a au moins deux équipes dans la poule sélectionnée
+    if (poolTeams.length < 2) {
+        alert("Il n'y a pas assez d'équipes dans cette poule pour générer un match.");
+        return;
+    }
+
+    // Créer une copie de la liste des équipes de la poule sélectionnée
+    var availableTeams = [...poolTeams];
+
+    // Sélectionner aléatoirement deux équipes de la poule sélectionnée
+    var randomIndex1 = Math.floor(Math.random() * availableTeams.length);
+    var randomTeam1 = availableTeams[randomIndex1];
+    availableTeams.splice(randomIndex1, 1); // Retirer l'équipe sélectionnée de la liste des équipes disponibles
+
+    var randomIndex2 = Math.floor(Math.random() * availableTeams.length);
+    var randomTeam2 = availableTeams[randomIndex2];
+
+    // Créer un objet représentant le match et l'ajouter à la liste des matchs
+    var match = {
+        team1: randomTeam1.name,
+        team2: randomTeam2.name
+    };
+    matches.push(match);
+
+    // Afficher tous les matchs générés à l'utilisateur
+    displayMatches();
+}
+
+
+
+
+// Fonction pour afficher tous les matchs générés
+function displayMatches() {
+    var matchesContainer = document.getElementById('matchesContainer');
+    matchesContainer.innerHTML = ''; // Effacer le contenu précédent
+
+    // Parcourir tous les matchs et les afficher dans le conteneur
+    matches.forEach((match, index) => {
+        var matchInfo = document.createElement('div');
+        matchInfo.textContent = `Match ${index + 1}: ${match.team1} vs ${match.team2}`;
+        matchesContainer.appendChild(matchInfo);
+    });
+}
 
